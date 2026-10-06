@@ -1,0 +1,20 @@
+# .NET build outputs
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio / IDE files
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Local secrets and environment configuration
+.env
+.env.*
+!.env.example
+
+# OS metadata and downloaded-file zone markers
+.DS_Store
+Thumbs.db
+*Zone.Identifier*
