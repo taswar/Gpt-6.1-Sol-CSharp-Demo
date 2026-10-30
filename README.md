@@ -9,10 +9,10 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
 
-- 📖 Full walkthrough: [GPT-6.1 Sol for C# Developers](https://taswar.zeytinsoft.com/gpt-6-1-sol-csharp-developers-guide/)
+- 📖 Full walkthrough: [GPT-6.1 Sol for C# Developers](https://taswar.zeytinsoft.com/gpt-6-1-sol-csharp-developers-guide/?utm_source=github&utm_medium=readme&utm_campaign=Gpt-6.1-Sol-CSharp-Demo&utm_content=walkthrough)
 - ⭐ If this sample helps you, star the repo so other .NET developers can find it.
 - 🔁 Related: [GPT-6 Astra C# Demo](https://github.com/taswar/GptSixAstraDemo)
-- For more C# samples using other AI models, see [AI models for C# developers](https://taswar.zeytinsoft.com/foundry-ai-models-csharp/)
+- For more C# samples using other AI models, see [AI models for C# developers](https://taswar.zeytinsoft.com/foundry-ai-models-csharp/?utm_source=github&utm_medium=readme&utm_campaign=Gpt-6.1-Sol-CSharp-Demo&utm_content=ai-models-hub)
 - For my free ebook on prompt engineering, see [Prompt Engineering for .NET Developers](https://github.com/taswar/PromptEngineeringForDotNetDevelopers)
 
 It's one `Program.cs` with no wrapper library. Each sample prints its token usage, so you can see what the work costs before you put it into a pipeline.
@@ -129,8 +129,8 @@ CONTRIBUTING.md                  How to contribute
 
 ## Learn more
 
-- [GPT-6.1 Sol for C# Developers (blog post)](https://taswar.zeytinsoft.com/gpt-6-1-sol-csharp-developers-guide/)
-- [GPT-6 Astra for C# Developers (blog post)](https://taswar.zeytinsoft.com/gpt-6-astra-csharp-developers-guide/)
+- [GPT-6.1 Sol for C# Developers (blog post)](https://taswar.zeytinsoft.com/gpt-6-1-sol-csharp-developers-guide/?utm_source=github&utm_medium=readme&utm_campaign=Gpt-6.1-Sol-CSharp-Demo&utm_content=walkthrough)
+- [GPT-6 Astra for C# Developers (blog post)](https://taswar.zeytinsoft.com/gpt-6-astra-csharp-developers-guide/?utm_source=github&utm_medium=readme&utm_campaign=Gpt-6.1-Sol-CSharp-Demo&utm_content=gpt-6-astra-csharp-developers-guide)
 - [Introducing GPT-6.1 Sol in Microsoft Foundry](https://techcommunity.microsoft.com/blog/azure-ai-foundry-blog/introducing-gpt-6-1-sol-in-microsoft-foundry-advanced-intelligence-optimized-for/4560811)
 - [Microsoft.Extensions.AI documentation](https://learn.microsoft.com/dotnet/ai/microsoft-extensions-ai)
 - [.NET Secret Manager](https://learn.microsoft.com/aspnet/core/security/app-secrets)
