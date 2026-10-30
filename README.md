@@ -2,10 +2,18 @@
 
 > A runnable .NET 10 console app that calls **GPT-6.1 Sol** in **Microsoft Foundry** through `Microsoft.Extensions.AI`, covering PR triage, an approval-gated tool call, an evidence-bound vendor review and a reasoning-effort cost comparison.
 
-![.NET 10](https://img.shields.io/badge/.NET-10-512BD4)
-![License: MIT](https://img.shields.io/badge/license-MIT-green)
+![GPT-6.1 Sol for C# Developers](GPT-6.1-Sol-CSharp-Developers.png)
 
-<!-- TODO: add a screenshot of a full `dotnet run`. -->
+[![Build](https://github.com/taswar/Gpt-6.1-Sol-CSharp-Demo/actions/workflows/dotnet.yml/badge.svg)](https://github.com/taswar/Gpt-6.1-Sol-CSharp-Demo/actions/workflows/dotnet.yml)
+![.NET 10](https://img.shields.io/badge/.NET-10-512BD4)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
+
+- 📖 Full walkthrough: [GPT-6.1 Sol for C# Developers](https://taswar.zeytinsoft.com/gpt-6-1-sol-csharp-developers-guide/)
+- ⭐ If this sample helps you, star the repo so other .NET developers can find it.
+- 🔁 Related: [GPT-6 Astra C# Demo](https://github.com/taswar/GptSixAstraDemo)
+- For more C# samples using other AI models, see [AI models for C# developers](https://taswar.zeytinsoft.com/foundry-ai-models-csharp/)
+- For my free ebook on prompt engineering, see [Prompt Engineering for .NET Developers](https://github.com/taswar/PromptEngineeringForDotNetDevelopers)
 
 It's one `Program.cs` with no wrapper library. Each sample prints its token usage, so you can see what the work costs before you put it into a pipeline.
 
@@ -33,9 +41,11 @@ Each sample prints a usage line like this one:
 
 ## Run it
 
-**1. Store your settings** (user secrets are kept outside the repo):
+**1. Clone the repo and store your settings** (user secrets are kept outside the repo):
 
 ```bash
+git clone https://github.com/taswar/Gpt-6.1-Sol-CSharp-Demo.git
+cd Gpt-6.1-Sol-CSharp-Demo
 dotnet user-secrets set "AZURE_AI_ENDPOINT" "https://<your-resource>.cognitiveservices.azure.com/"
 dotnet user-secrets set "AZURE_OPENAI_DEPLOYMENT" "<your-deployment-name>"
 ```
@@ -112,11 +122,13 @@ The OpenAI SDK marks the Responses types as experimental, which is why `Program.
 ```
 Gpt-6.1-Sol-CSharp-Demo.csproj   Target framework, NuGet references, UserSecretsId
 Program.cs                       Client setup, the four samples, the usage reporter
+GPT-6.1-Sol-CSharp-Developers.png  README banner image
+CONTRIBUTING.md                  How to contribute
+.github/workflows/dotnet.yml     Build workflow
 ```
 
 ## Learn more
 
-<!-- TODO: confirm the final URL once the post is published. -->
 - [GPT-6.1 Sol for C# Developers (blog post)](https://taswar.zeytinsoft.com/gpt-6-1-sol-csharp-developers-guide/)
 - [GPT-6 Astra for C# Developers (blog post)](https://taswar.zeytinsoft.com/gpt-6-astra-csharp-developers-guide/)
 - [Introducing GPT-6.1 Sol in Microsoft Foundry](https://techcommunity.microsoft.com/blog/azure-ai-foundry-blog/introducing-gpt-6-1-sol-in-microsoft-foundry-advanced-intelligence-optimized-for/4560811)
@@ -125,6 +137,6 @@ Program.cs                       Client setup, the four samples, the usage repor
 
 ## License
 
-MIT. <!-- Add a LICENSE file, or remove this section and the badge. -->
+MIT. See [LICENSE](LICENSE).
 
 If this saved you time, a ⭐ helps other .NET developers find it.
