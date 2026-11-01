@@ -67,6 +67,8 @@ dotnet run
 dotnet run -- ./ci-failure.txt
 ```
 
+**4. Optional: run it on every pull request.** [`ci/pr-triage.yml`](ci/pr-triage.yml) is an example GitHub Actions workflow that runs your tests and, only when they fail, sends the last 200 lines of output to Sol and writes the triage to the job summary. It signs in with OIDC, so no API key is stored in GitHub. Copy it into your own repository's `.github/workflows/` folder; the comments at the top list the setup.
+
 ## Why the Responses API?
 
 The app uses the Responses API (`/openai/v1/responses`) instead of Chat Completions. GPT-6.1 Sol rejects function tools combined with reasoning on `/chat/completions`:
@@ -131,6 +133,7 @@ Program.cs                       Client setup, the four samples, the usage repor
 GPT-6.1-Sol-CSharp-Developers.png  README banner image
 CONTRIBUTING.md                  How to contribute
 .github/workflows/dotnet.yml     Build workflow
+ci/pr-triage.yml                 Example PR triage workflow (copy into your own repo)
 ```
 
 ## Learn more

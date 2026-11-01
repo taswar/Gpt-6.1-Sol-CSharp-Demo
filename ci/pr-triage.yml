@@ -1,0 +1,60 @@
+# Example GitHub Actions workflow: run the tests on every pull request and, only when they fail,
+# ask GPT-6.1 Sol to triage the failure. The triage goes to the job summary; it never approves or merges.
+#
+# This file lives outside .github/workflows/ so it doesn't run against this sample repository.
+# To use it, copy it into your own repository's .github/workflows/ folder.
+#
+# It assumes the triage program is its own project at tools/PrTriage: Case 1 from Program.cs,
+# which reads the CI output from the file passed on the command line.
+#
+# One-time setup:
+#   - An Entra ID app registration with a federated credential for GitHub Actions (OIDC), and the
+#     Cognitive Services OpenAI User role on your resource. No API key is stored in GitHub.
+#   - Repository secrets: AZURE_CLIENT_ID, AZURE_TENANT_ID, AZURE_SUBSCRIPTION_ID
+#   - Repository variables: AZURE_AI_ENDPOINT, AZURE_OPENAI_DEPLOYMENT
+#
+# Treat pull request content as untrusted input: a test name or log line can carry prompt-injection
+# text, which is one more reason the model's output stays advisory.
+name: pr-triage
+on: pull_request
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  test-and-triage:
+    # Forked PRs get no OIDC token or secrets, so skip them.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Test
+        id: tests
+        continue-on-error: true
+        shell: bash
+        run: dotnet test 2>&1 | tee test-output.txt
+
+      - uses: azure/login@v2
+        if: steps.tests.outcome == 'failure'
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: AI triage
+        if: steps.tests.outcome == 'failure'
+        run: |
+          dotnet user-secrets set --project tools/PrTriage "AZURE_AI_ENDPOINT" "${{ vars.AZURE_AI_ENDPOINT }}"
+          dotnet user-secrets set --project tools/PrTriage "AZURE_OPENAI_DEPLOYMENT" "${{ vars.AZURE_OPENAI_DEPLOYMENT }}"
+          # The last 200 lines keep the input tokens predictable.
+          tail -n 200 test-output.txt > ci-summary.txt
+          dotnet run --project tools/PrTriage -- ci-summary.txt >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Fail the job if tests failed
+        if: steps.tests.outcome == 'failure'
+        run: exit 1
