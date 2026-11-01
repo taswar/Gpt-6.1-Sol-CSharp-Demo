@@ -29,15 +29,15 @@ It's one `Program.cs` with no wrapper library. Each sample prints its token usag
 Each sample prints a usage line like this one:
 
 ```
-[pr-triage] input=77 cached=0 output=342 reasoning=222 elapsed=6.1s
+[pr-triage] input=77 cached=0 output=256 reasoning=156 elapsed=10.6s
 ```
 
 ## Prerequisites
 
 - **.NET 10 SDK**
 - An Azure subscription with a **Microsoft Foundry** resource and a **GPT-6.1 Sol** deployment
-- The **Azure CLI**, signed in with `az login`
-- The **Cognitive Services OpenAI User** role on the resource. Authentication goes through Entra ID (`DefaultAzureCredential`), so there's no API key.
+- The **Azure CLI**, signed in with `az login`, and the **Cognitive Services OpenAI User** role on the resource. Authentication goes through Entra ID (`DefaultAzureCredential`) by default.
+- Or an API key for the resource, if you'd rather skip Entra ID for a first try (see step 1).
 
 ## Run it
 
@@ -47,10 +47,12 @@ Each sample prints a usage line like this one:
 git clone https://github.com/taswar/Gpt-6.1-Sol-CSharp-Demo.git
 cd Gpt-6.1-Sol-CSharp-Demo
 dotnet user-secrets set "AZURE_AI_ENDPOINT" "https://<your-resource>.cognitiveservices.azure.com/"
-dotnet user-secrets set "AZURE_OPENAI_DEPLOYMENT" "<your-deployment-name>"
+dotnet user-secrets set "AZURE_OPENAI_DEPLOYMENT" "gpt-6.1-sol"
 ```
 
-Use the resource's base endpoint. The app appends `openai/v1/` itself.
+Use the resource's base endpoint. The app appends `openai/v1/` itself. The deployment name defaults to `gpt-6.1-sol`, so you only need that line if yours is named differently.
+
+To use an API key instead of Entra ID, also run `dotnet user-secrets set "AZURE_OPENAI_API_KEY" "<your-api-key>"` and skip `az login`. The app sends the key in the `api-key` header.
 
 **2. Sign in and run:**
 
@@ -78,9 +80,13 @@ reasoning_effort to 'none'.
 Case 2 needs both, so the client is built like this:
 
 ```csharp
+// Entra ID by default; an api-key header when AZURE_OPENAI_API_KEY is set.
+AuthenticationPolicy authPolicy = string.IsNullOrWhiteSpace(apiKey)
+    ? new BearerTokenPolicy(new DefaultAzureCredential(), "https://cognitiveservices.azure.com/.default")
+    : ApiKeyAuthenticationPolicy.CreateHeaderApiKeyPolicy(new ApiKeyCredential(apiKey), "api-key");
+
 IChatClient chat = new ResponsesClient(
-        new BearerTokenPolicy(new DefaultAzureCredential(),
-            "https://cognitiveservices.azure.com/.default"),
+        authPolicy,
         new ResponsesClientOptions { Endpoint = new Uri(new Uri(endpoint), "openai/v1/") })
     .AsIChatClient(deployment)
     .AsBuilder()
@@ -104,7 +110,7 @@ The OpenAI SDK marks the Responses types as experimental, which is why `Program.
 |-------|--------------|-----|
 | `404 DeploymentNotFound` | `AZURE_OPENAI_DEPLOYMENT` doesn't match a deployment on the resource | Set it to the exact deployment name. A brand-new deployment can take about 5 minutes to become available. |
 | `400 ... Function tools with reasoning_effort are not supported` | The client is calling Chat Completions | Use the `ResponsesClient` setup shown above |
-| `401` / `403` | Missing role, or `az login` signed in to the wrong tenant | Assign **Cognitive Services OpenAI User**, then run `az login --tenant <id>` |
+| `401` / `403` | Missing role, `az login` signed in to the wrong tenant, or a bad API key | Assign **Cognitive Services OpenAI User**, then run `az login --tenant <id>`; or check the key |
 | `InvalidOperationException: AZURE_AI_ENDPOINT is not set` | User secrets are missing | Run the `dotnet user-secrets set` commands from inside the project folder |
 
 ## Dependencies

@@ -1,5 +1,6 @@
 ﻿#pragma warning disable OPENAI001 // Responses API types are marked experimental in the OpenAI SDK
 
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -15,11 +16,9 @@ var config = new ConfigurationBuilder()
 var endpoint = config["AZURE_AI_ENDPOINT"]
     ?? throw new InvalidOperationException(
         "AZURE_AI_ENDPOINT is not set. Run: dotnet user-secrets set \"AZURE_AI_ENDPOINT\" \"<your-endpoint>\"");
-var deployment = config["AZURE_OPENAI_DEPLOYMENT"]
-    ?? throw new InvalidOperationException(
-        "AZURE_OPENAI_DEPLOYMENT is not set. Run: dotnet user-secrets set \"AZURE_OPENAI_DEPLOYMENT\" \"<your-deployment>\"");
+var deployment = config["AZURE_OPENAI_DEPLOYMENT"] ?? "gpt-6.1-sol";
 
-// gpt-6-sol rejects function tools + reasoning on /chat/completions, so use the
+// gpt-6.1-sol rejects function tools + reasoning on /chat/completions, so use the
 // Responses API through the Azure OpenAI v1 endpoint.
 var clientOptions = new ResponsesClientOptions
 {
@@ -27,10 +26,13 @@ var clientOptions = new ResponsesClientOptions
     NetworkTimeout = TimeSpan.FromMinutes(3)
 };
 
-IChatClient chat = new ResponsesClient(
-        new BearerTokenPolicy(new DefaultAzureCredential(),
-            "https://cognitiveservices.azure.com/.default"),
-        clientOptions)
+// Entra ID by default. Set AZURE_OPENAI_API_KEY to send an api-key header instead, handy for a first try.
+var apiKey = config["AZURE_OPENAI_API_KEY"];
+AuthenticationPolicy authPolicy = string.IsNullOrWhiteSpace(apiKey)
+    ? new BearerTokenPolicy(new DefaultAzureCredential(), "https://cognitiveservices.azure.com/.default")
+    : ApiKeyAuthenticationPolicy.CreateHeaderApiKeyPolicy(new ApiKeyCredential(apiKey), "api-key");
+
+IChatClient chat = new ResponsesClient(authPolicy, clientOptions)
     .AsIChatClient(deployment)
     .AsBuilder()
     .UseFunctionInvocation()
